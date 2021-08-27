@@ -1,0 +1,88 @@
+---
+title: "Exp10_LOWESS"
+author: "Kaustubh Venkatesh"
+date: "26/08/2021"
+output: html_document
+---
+```{r}
+# R version
+version
+# install.packages('ggplot2');
+```
+```{r}
+# Importing the dataset from csv file
+data <- read.csv('LOWESS_scatter.csv');
+head(data);
+X = data[,1];
+Y = data[,2];
+```
+
+```{r}
+# Helper funtion to implement clipping of vector
+clip <- function(x, lower, upper) {
+  pmax(pmin(x, upper), lower)
+}
+
+# Function to implement LOWESS Algorithm
+lowess <- function(x, y, f = 2./3.,iter = 3){
+  n = length(x);
+  r = ceiling(f*n);
+  h = c();
+  for(i in 1:n){
+    temp = abs(x - x[i]);
+    sort(temp)
+    h[i] = temp[r];
+  }
+  minV <- 0.0;
+  maxV <- 1.0;
+  x1 = matrix(x,1,n);
+  x2 = matrix(x,n,1);
+  w = matrix(0,1,n);
+  for(i in 1:n){
+    temp = matrix(abs((x1[i] - x2)/h[i]),1,n);
+    temp = clip(temp,minV,maxV);
+    w = rbind(w,temp);
+  }
+  w = w[1:n,];
+  w = (1 - w ** 3) ** 3;
+  yest = matrix(0,1,n);
+  delta = matrix(1,1,n);
+  prev_weights = matrix(0,1,n);
+
+  for(iteration in 1:iter){
+    for(i in 1:n){
+      weights = delta * matrix(w[,i],1,n);
+      if(any(is.na(weights))){
+        weights = prev_weights;
+      }
+      b = c(sum(weights*y), sum(weights*y*x));
+      A = matrix(c(sum(weights), sum(weights*x), sum(weights*x),sum(weights*x*x)),2,2);
+      beta = solve(A,b);
+      yest[i] = beta[1] + beta[2] * x[i];
+      prev_weights = weights;
+    }
+    
+    # Calculating the residual and median of residuals
+    residuals = matrix(y,1,n) - yest;
+    residuals = matrix(residuals,1,n);
+
+    s = sort(abs(residuals))[n/2];
+    delta = clip(residuals / (6.0 * s), -1, 1);
+    delta = (1 - delta ** 2) ** 2;
+    delta = matrix(delta,1,n);
+  }
+  return(yest);
+}
+
+```
+
+```{r}
+yest = lowess(X,Y,f=0.25,iter=15);
+library(ggplot2);
+plot(X,Y,type='l',col='red',lwd=2,main="Output Graph");
+lines(X,yest,type='l',col='green',lwd=2);
+legend(x=8.45,y=3,legend=c('Y with Noise','Locally Weighted Regression Output'),col=c("red","green"),cex=0.6,pch=15);
+
+
+```
+

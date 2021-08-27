@@ -1,0 +1,61 @@
+---
+title: "Temp_Exp10"
+author: "Kaustubh Venkatesh"
+date: "27/08/2021"
+output: html_document
+---
+
+```{r}
+# R version
+version
+install.packages('pracma');
+install.packages('ggplot2');
+```
+
+```{r}
+# Importing the dataset from csv file
+data <- read.csv('LOWESS_scatter.csv');
+head(data);
+X = data[,1];
+Y = data[,2];
+```
+
+```{r}
+# Function to calculate W weight diagonal Matrix used in calculation of predictions
+get_WeightMatrix_for_LOWESS <- function(query_point, Training_examples, Bandwidth){
+  M <- dim(Training_examples)[1];
+  W <- matrix(diag(M), nrow = M);
+  for(i in 1:M){
+    xi <- Training_examples[i];
+    denominator <- (-2 * Bandwidth * Bandwidth);
+    #W[i,i] <- exp(((xi-query_point)%*%t(xi-query_point))/denominator);
+  }
+  return(W);
+}
+```
+
+```{r}
+# Function to make predictions
+predict <- function(Training_examples, Y, query_x, Bandwidth){
+  library(pracma);
+  M = dim(Training_examples)[1];
+  all_ones <- matrix(1,M,1);
+  X_ <- cbind(Training_examples, all_ones);
+  qx <- cbind(query_x,matrix(1,1,1))
+  W <- get_WeightMatrix_for_LOWESS(qx, X_, Bandwidth);
+  theta <- pinv(t(X_)*(W * X_))*(t(X_)*(W * Y));
+  pred <- qx %*% theta;
+  return(list('theta'=theta,'pred'=pred));
+}
+```
+
+```{r}
+Bandwidth <- 0.1;
+x_test <- seq(from = -2, to = 20, by = 2)
+Y_test <- c(length = length(x));
+
+for(query in x_test){
+  predict(X, Y, query, Bandwidth);
+}
+
+```
