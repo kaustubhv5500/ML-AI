@@ -18,7 +18,7 @@ Y = data[,2];
 ```
 
 ```{r}
-# Helper funtion to implement clipping of vector
+# Helper function to implement clipping of vector
 clip <- function(x, lower, upper) {
   pmax(pmin(x, upper), lower)
 }
