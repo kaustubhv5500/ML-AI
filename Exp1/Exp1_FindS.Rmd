@@ -6,16 +6,16 @@ output: html_document
 ---
 
 ```{r}
+rm(list = ls())
+
 # R version
 version
 ```
 
 ```{r}
 # Importing CSV file containing weather data
-# data <- read.csv('tennis.csv')
 data <- read.csv('weather.csv');
 head(data);
-# data <- array(data)
 ```
 ```{r}
 # Initializing hypothesis array based on length of csv data

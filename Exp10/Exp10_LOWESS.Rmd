@@ -5,9 +5,10 @@ date: "26/08/2021"
 output: html_document
 ---
 ```{r}
+rm(list = ls())
+
 # R version
 version
-# install.packages('ggplot2');
 ```
 ```{r}
 # Importing the dataset from csv file
