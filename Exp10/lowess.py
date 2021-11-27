@@ -79,13 +79,15 @@ def lowess(x, y, f=2. / 3., iter=3):
 
 if __name__ == '__main__':
     import math
-    n = 100
+    n = 200
     x = np.linspace(0, 2 * math.pi, n)
     y = np.sin(x) + 0.3 * np.random.randn(n)
 
     f = 0.25
     yest = lowess(x, y, f=f, iter=3)
-
+    df = pd.DataFrame(yest)
+    print(df)
+    df.to_csv("LOWESS_pred.csv",index=False)
     import pylab as pl
     pl.clf()
     pl.plot(x, y, label='y noisy')
