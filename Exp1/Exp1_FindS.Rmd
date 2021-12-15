@@ -1,15 +1,14 @@
 ---
 title: "Exp1_FindS"
-author: "Kaustubh Venkatesh"
-date: "26/08/2021"
 output: html_document
 ---
 
 ```{r}
 rm(list = ls())
 
-# R version
-version
+# R version: 4.0.2
+# OS Version: Windows 10
+# version
 ```
 
 ```{r}
