@@ -1,14 +1,11 @@
 ---
-title: "Exp1_FindS"
+title: "Exp 1 - Find-S Algorithm"
 output: html_document
 ---
 
 ```{r}
 rm(list = ls())
-
-# R version: 4.0.2
-# OS Version: Windows 10
-# version
+version$version.string
 ```
 
 ```{r}
@@ -17,19 +14,19 @@ data <- read.csv('weather.csv');
 head(data);
 ```
 ```{r}
-# Initializing hypothesis array based on length of csv data
+# Initializing hypothesis array based on the length of the imported data
 num_attributes = dim(data)[2]-1;
 hypothesis <- c(length<-(num_attributes))
 for(i in 1:num_attributes){
   hypothesis[i] = '0';
 }
 
-# Initializing hypothesis to the first data row 
+# Initializing hypothesis for the first data row
 hypothesis <- array(data[1,1:num_attributes]);
 ```
 
 ```{r}
-# Find S: Finding a Maximally Specific Hypothesis
+# Applying FIND-S algorithm
 for(i in 1:dim(data)[1]){
   isequal <- data[i,num_attributes+1] == "yes";
   if(isequal){
@@ -50,4 +47,3 @@ for(i in 1:dim(data)[1]){
 # Most specific hypothesis based on the given set of training data
 hypothesis
 ```
-
